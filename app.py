@@ -22,7 +22,7 @@ class AllReviews(Resource):
               in: query
               type: string
               required: false
-              enum:[ASC,DESC]
+              enum: ['ASC','DESC']
               description: The parameter to sort the reviews by (e.g., 'rating', 'book')
             - name: max_records
               in: query
@@ -39,22 +39,15 @@ class AllReviews(Resource):
                         items:
                           type: object
                           properties:
-                            book_title:
+                            Books:
                               type:string
-                              description: The book title
-
-                            book_rating:
+                            Rating:
                               type: number
-                              description: User rating
-                            book_notes:
+                            Notes:
                               type: string
-                              description: Notes are optional
         """
         sort = request.args.get("sort", default=None)
         max_records = request.args.get("max_records", default=10, type=int)
-
-        if sort and sort not in ["ASC", "DESC"]:
-            return {"error": "Invalid sort value"}, 400
 
         if sort == "ASC":
             book_reviews = br.get_book_ratings(sort=sort, max_records=max_records)
