@@ -39,57 +39,6 @@ class UppercaseText(Resource):
         return {"text": text.upper()}, 200
 
 
-class ProcessText(Resource):
-    def get(self):
-        """
-        This method responds to the GET request for this endpoint and processes the text.
-        ---
-        tags:
-        - Text Processing
-        parameters:
-            - name: text
-              in: query
-              type: string
-              required: true
-              description: The text to be processed
-            - name: duplication_factor
-              in: query
-              type: integer
-              required: false
-              description: The number of times the text should be repeated
-            - name: capitalization
-              in: query
-              type: string
-              required: false
-              description: Specify 'UPPER', 'LOWER', or leave empty for no capitalization change
-        responses:
-            200:
-                description: A successful GET request
-                content:
-                    application/json:
-                      schema:
-                        type: object
-                        properties:
-                            result:
-                                type: string
-                                description: The processed text
-        """
-        text = request.args.get("text")
-        duplication_factor = request.args.get("duplication_factor", default=1, type=int)
-        capitalization = request.args.get("capitalization", default=None, type=str)
-
-        if not text:
-            return {"error": "Text field is required."}, 400
-
-        if capitalization == "UPPER":
-            text = text.upper()
-        elif capitalization == "LOWER":
-            text = text.lower()
-
-        result_text = text * duplication_factor
-
-        return {"result": result_text}, 200
-
 
 class Records(Resource):
     def get(self):
