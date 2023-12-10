@@ -2,144 +2,70 @@ from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 from flasgger import Swagger
 
-import book_review
+import book
 
 app = Flask(__name__)
 api = Api(app)
 swagger = Swagger(app)
+br = book.BookReview()
 
 
-class UppercaseText(Resource):
+class AllReviews(Resource):
     def get(self):
         """
-        This method responds to the GET request for this endpoint and returns the data in uppercase.
+        This method responds to the GET request for this endpoint and returns a list of book reviews.
         ---
         tags:
-        - Text Processing
+        - Book Reviews
         parameters:
-            - name: text
+            - name: sort
               in: query
               type: string
-              required: true
-              description: The text to be converted to uppercase
+              required: false
+              enum:[ASC,DESC]
+              description: The parameter to sort the reviews by (e.g., 'rating', 'book')
+            - name: max_records
+              in: query
+              type: integer
+              required: false
+              description: The maximum number of records to return
         responses:
             200:
                 description: A successful GET request
                 content:
                     application/json:
                       schema:
-                        type: object
-                        properties:
-                            text:
-                                type: string
-                                description: The text in uppercase
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            book_title:
+                              type:string
+                              description: The book title
+
+                            book_rating:
+                              type: number
+                              description: User rating
+                            book_notes:
+                              type: string
+                              description: Notes are optional
         """
-        text = request.args.get("text")
+        sort = request.args.get("sort", default=None)
+        max_records = request.args.get("max_records", default=10, type=int)
 
-        return {"text": text.upper()}, 200
+        if sort and sort not in ["ASC", "DESC"]:
+            return {"error": "Invalid sort value"}, 400
 
-
-
-class Records(Resource):
-    def get(self):
-        """
-        This method responds to the GET request for returning a number of books.
-        ---
-        tags:
-        - Records
-        parameters:
-            - name: count
-              in: query
-              type: integer
-              required: false
-              description: The number of books to return
-            - name: sort
-              in: query
-              type: string
-              enum: ['ASC', 'DESC']
-              required: false
-              description: Sort order for the books
-        responses:
-            200:
-                description: A successful GET request
-                schema:
-                    type: object
-                    properties:
-                        books:
-                            type: array
-                            items:
-                                type: object
-                                properties:
-                                    title:
-                                        type: string
-                                        description: The title of the book
-                                    author:
-                                        type: string
-                                        description: The author of the book
-        """
-
-        count = request.args.get(
-            "count"
-        )  # Default to returning 10 books if count is not provided
-        sort = request.args.get("sort")
-
-        # Get all the books
-        books = book_review.get_all_records(count=count, sort=sort)
-
-        return {"books": books}, 200
-
-
-class AddRecord(Resource):
-    def post(self):
-        """
-        This method responds to the POST request for adding a new record to the DB table.
-        ---
-        tags:
-        - Records
-        parameters:
-            - in: body
-              name: body
-              required: true
-              schema:
-                id: BookReview
-                required:
-                  - Book
-                  - Rating
-                properties:
-                  Book:
-                    type: string
-                    description: the name of the book
-                  Rating:
-                    type: integer
-                    description: the rating of the book (1-10)
-        responses:
-            200:
-                description: A successful POST request
-            400:
-                description: Bad request, missing 'Book' or 'Rating' in the request body
-        """
-
-        data = request.json
-        print(data)
-
-        # Check if 'Book' and 'Rating' are present in the request body
-        if "Book" not in data or "Rating" not in data:
-            return {
-                "message": "Bad request, missing 'Book' or 'Rating' in the request body"
-            }, 400
-        # Call the add_record function to add the record to the DB table
-        success = book_review.add_record(data)
-
-        if success:
-            return {"message": "Record added successfully"}, 200
+        if sort == "ASC":
+            book_reviews = br.get_book_ratings(sort=sort, max_records=max_records)
+        elif sort == "DESC":
+            book_reviews = br.get_book_ratings(sort=sort, max_records=max_records)
         else:
-            return {"message": "Failed to add record"}, 500
+            book_reviews = br.get_book_ratings(max_records=max_records)
+        return book_reviews, 200
 
 
-api.add_resource(AddRecord, "/add-record")
-api.add_resource(Records, "/records")
-api.add_resource(UppercaseText, "/uppercase")
-api.add_resource(ProcessText, "/process_text")
+api.add_resource(AllReviews, "/all_reviews")
 
 
 if __name__ == "__main__":

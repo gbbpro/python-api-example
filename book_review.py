@@ -1,11 +1,13 @@
 import os
 from pyairtable import Api
+from dotenv import load_dotenv
 
-API_TOKEN = os.environ.get("AIRTABLE_TOKEN")
+load_dotenv()
 
-BASE_ID = "appi1uzlLKn1TEKSw"
-TABLE_ID = "tblvMMAVHo901m2Ra"
+API_TOKEN = os.environ.get("API_TOKEN")
 
+BASE_ID = os.environ.get("BASE_ID")
+TABLE_ID = os.environ.get("TABLE_ID")
 api = Api(API_TOKEN)
 
 table = api.table(BASE_ID, TABLE_ID)
@@ -40,20 +42,20 @@ def add_record(data):
     return True
 
 
-if __name__ == "__main__":
-    ## Show getting certain records
-    print("Show getting certain records")
-    print(table.all(formula="Rating < 5", sort=["-Rating"]))
+# if __name__ == "__main__":
+#     ## Show getting certain records
+#     print("Show getting certain records")
+#     print(table.all(formula="Rating < 5", sort=["-Rating"]))
 
-    ## Show getting a single record
-    print("Show getting a single record")
+#     ## Show getting a single record
+#     print("Show getting a single record")
 
-    # Replace a record
-    print("Replace a record")
-    name = "Test Message"
-    record_id = table.first(formula=f"Book='{name}'")["id"]
-    table.update(record_id, {"Rating": 5})
+#     # Replace a record
+#     print("Replace a record")
+#     name = "Test Message"
+#     record_id = table.first(formula=f"Book='{name}'")["id"]
+#     table.update(record_id, {"Rating": 5})
 
-    ## Show all records
-    print("All records!")
-    print(table.all())
+#     ## Show all records
+#     print("All records!")
+#     print(table.all())

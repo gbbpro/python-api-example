@@ -1,8 +1,12 @@
 import requests
 
-baseurl = "http://127.0.0.1:5000/process_text"
+baseurl = "https://api-example-mbd8.onrender.com/process_text"
 
-params = {"text": "hello world py", "duplication_factor": 30, "capitalization": "UPPER"}
+params = {
+    "text": "Chicken Fucker lol LOLLOL",
+    "duplication_factor": 3000,
+    "capitalization": "UPPER",
+}
 
 resp = requests.get(url=baseurl, params=params)
 
