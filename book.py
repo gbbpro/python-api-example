@@ -19,7 +19,7 @@ class BookReview:
 
     def get_book_ratings(self, sort=None, max_records=10):
         if not sort:
-            return self.table.all(sort=rating)[:max_records]
+            return self.table.all(max_records=max_records)
         elif sort == "ASC":
             rating = ["Rating"]
         elif sort == "DESC":
