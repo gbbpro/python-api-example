@@ -8,6 +8,7 @@ app = Flask(__name__)
 api = Api(app)
 swagger = Swagger(app)
 
+
 class UppercaseText(Resource):
     def get(self):
         """
@@ -33,10 +34,63 @@ class UppercaseText(Resource):
                                 type: string
                                 description: The text in uppercase
         """
-        text = request.args.get('text')
+        text = request.args.get("text")
 
-        return jsonify({"text": text.upper()})
-    
+        return {"text": text.upper()}, 200
+
+
+class ProcessText(Resource):
+    def get(self):
+        """
+        This method responds to the GET request for this endpoint and processes the text.
+        ---
+        tags:
+        - Text Processing
+        parameters:
+            - name: text
+              in: query
+              type: string
+              required: true
+              description: The text to be processed
+            - name: duplication_factor
+              in: query
+              type: integer
+              required: false
+              description: The number of times the text should be repeated
+            - name: capitalization
+              in: query
+              type: string
+              required: false
+              description: Specify 'UPPER', 'LOWER', or leave empty for no capitalization change
+        responses:
+            200:
+                description: A successful GET request
+                content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                            result:
+                                type: string
+                                description: The processed text
+        """
+        text = request.args.get("text")
+        duplication_factor = request.args.get("duplication_factor", default=1, type=int)
+        capitalization = request.args.get("capitalization", default=None, type=str)
+
+        if not text:
+            return {"error": "Text field is required."}, 400
+
+        if capitalization == "UPPER":
+            text = text.upper()
+        elif capitalization == "LOWER":
+            text = text.lower()
+
+        result_text = text * duplication_factor
+
+        return {"result": result_text}, 200
+
+
 class Records(Resource):
     def get(self):
         """
@@ -75,14 +129,17 @@ class Records(Resource):
                                         description: The author of the book
         """
 
-        count = request.args.get('count')  # Default to returning 10 books if count is not provided
-        sort = request.args.get('sort')
+        count = request.args.get(
+            "count"
+        )  # Default to returning 10 books if count is not provided
+        sort = request.args.get("sort")
 
         # Get all the books
         books = book_review.get_all_records(count=count, sort=sort)
 
         return {"books": books}, 200
-    
+
+
 class AddRecord(Resource):
     def post(self):
         """
@@ -109,7 +166,7 @@ class AddRecord(Resource):
         responses:
             200:
                 description: A successful POST request
-            400: 
+            400:
                 description: Bad request, missing 'Book' or 'Rating' in the request body
         """
 
@@ -117,8 +174,10 @@ class AddRecord(Resource):
         print(data)
 
         # Check if 'Book' and 'Rating' are present in the request body
-        if 'Book' not in data or 'Rating' not in data:
-            return {"message": "Bad request, missing 'Book' or 'Rating' in the request body"}, 400
+        if "Book" not in data or "Rating" not in data:
+            return {
+                "message": "Bad request, missing 'Book' or 'Rating' in the request body"
+            }, 400
         # Call the add_record function to add the record to the DB table
         success = book_review.add_record(data)
 
@@ -126,12 +185,13 @@ class AddRecord(Resource):
             return {"message": "Record added successfully"}, 200
         else:
             return {"message": "Failed to add record"}, 500
-        
 
 
 api.add_resource(AddRecord, "/add-record")
 api.add_resource(Records, "/records")
 api.add_resource(UppercaseText, "/uppercase")
+api.add_resource(ProcessText, "/process_text")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

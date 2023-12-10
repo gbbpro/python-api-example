@@ -6,8 +6,8 @@ app = Flask(__name__)
 api = Api(app)
 swagger = Swagger(app)
 
-class UppercaseText(Resource):
 
+class UppercaseText(Resource):
     def get(self):
         """
         This method responds to the GET request for this endpoint and returns the data in uppercase.
@@ -32,9 +32,10 @@ class UppercaseText(Resource):
                                 type: string
                                 description: The text in uppercase
         """
-        text = request.args.get('text')
+        text = request.args.get("text")
 
         return jsonify({"text": text.upper()})
+
 
 api.add_resource(UppercaseText, "/uppercase")
 
