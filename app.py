@@ -58,6 +58,53 @@ class AllReviews(Resource):
         return book_reviews, 200
 
 
+class PostReview(Resource):
+    def post(self):
+        """
+        This method responds to the POST request for this endpoint and adds a new book review.
+        ---
+        tags:
+        - Book Reviews
+        consumes:
+        - application/json
+        parameters:
+            - in: body
+              name: body
+              description: Book review data
+              required: true
+              schema:
+                type: object
+                required:
+                - book
+                - review
+                properties:
+                    books:
+                        type: string
+                        description: The name of the book
+                    rating:
+                        type: number
+                        description: The review text
+                    notes:
+                        type: string
+                        description: Additional notes (optional)
+        responses:
+            201:
+                description: Review added successfully
+        """
+        data = request.get_json()
+        book = data.get("book")
+        rating = data.get("review")
+        notes = data.get("notes", None)
+
+        # Here you would add logic to insert the review data into your database
+        br.add_book_rating(book, rating, notes)
+
+        return {"message": "Review added successfully"}, 201
+
+
+api.add_resource(PostReview, "/post_review")
+
+
 api.add_resource(AllReviews, "/all_reviews")
 
 

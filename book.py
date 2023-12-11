@@ -34,6 +34,3 @@ class BookReview:
 
 if __name__ == "__main__":
     br = BookReview()
-    br.add_book_rating("The Art of War",rating=3.5, notes="over rated")
-    br.add_book_rating("Sideways", 5.5, notes="paul giamait")
-    print(br.get_book_ratings(sort="DESC"))
