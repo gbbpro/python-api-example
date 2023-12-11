@@ -40,7 +40,7 @@ class AllReviews(Resource):
                           type: object
                           properties:
                             Books:
-                              type:string
+                              type: string
                             Rating:
                               type: number
                             Notes:
@@ -73,18 +73,18 @@ class PostReview(Resource):
               description: Book review data
               required: true
               schema:
-                type: object
+                id: BookReview
                 required:
-                - book
-                - review
+                - Book
+                - Rating
                 properties:
-                    books:
+                    Book:
                         type: string
                         description: The name of the book
-                    rating:
+                    Rating:
                         type: number
                         description: The review text
-                    notes:
+                    Notes:
                         type: string
                         description: Additional notes (optional)
         responses:
@@ -92,9 +92,10 @@ class PostReview(Resource):
                 description: Review added successfully
         """
         data = request.get_json()
-        book = data.get("book")
-        rating = data.get("review")
-        notes = data.get("notes", None)
+        book = data.get("Book")
+        rating = data.get("Rating")
+        notes = data.get("Notes", None)
+
 
         # Here you would add logic to insert the review data into your database
         br.add_book_rating(book, rating, notes)
