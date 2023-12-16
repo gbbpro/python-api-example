@@ -99,15 +99,61 @@ class PostReview(Resource):
         """
         data = request.get_json()
         book = data.get("Book")
+        isbn = data.get("ISBN")
         rating = data.get("Rating")
         notes = data.get("Notes", None)
 
         # Here you would add logic to insert the review data into your database
-        br.add_book_rating(book, rating, notes)
+        br.add_book_rating(book, isbn, rating, notes)
 
         return {"message": "Review added successfully"}, 201
 
 
+class UpdateReview(Resource):
+    def put(self):
+        """
+        This method responds to the PUT request for this endpoint and updates a book review.
+        ---
+        tags:
+        - Book Reviews
+        consumes:
+        - application/json
+        parameters:
+            - in: body
+              name: body
+              description: Data to update the book review
+              required: true
+              schema:
+                id: UpdateBookReview
+                required:
+                - ISBN
+                - Rating
+                properties:
+                    ISBN:
+                        type: string
+                        description: Book Serial Number
+                    Rating:
+                        type: number
+                        description: Updated rating for the book
+                    Notes:
+                        type: string
+                        description: Optional updated notes for the book
+        responses:
+            200:
+                description: Review updated successfully
+        """
+        data = request.get_json()
+        isbn = data.get("ISBN")
+        rating = data.get("Rating")
+        notes = data.get("Notes", None)  # 'notes' is optional
+
+        # Here you would add logic to update the review data in your database
+        br.update_book_rating(isbn, rating, notes)
+
+        return {"message": "Review updated successfully"}, 200
+
+
+api.add_resource(UpdateReview, "/update_review")
 api.add_resource(PostReview, "/post_review")
 api.add_resource(AllReviews, "/all_reviews")
 
