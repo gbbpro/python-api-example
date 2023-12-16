@@ -31,20 +31,20 @@ class BookReview:
         fields = {"ISBN": isbn, "Books": book_title, "Rating": rating, "Notes": notes}
         self.table.create(fields=fields)
 
-    def update_book_rating(self, isbn, new_rating, new_notes=None):
-        # Find the record with the given ISBN
-        records = self.table.all(filterByFormula=f"ISBN='{isbn}'")
-        if not records:
-            return None  # No record found with the given ISBN
+def update_book_rating(self, isbn, new_rating, new_notes=None):
+    # Fetch records filtered by ISBN
+    records = self.table.all(formula=f"{{ISBN}} = '{isbn}'")
 
-        record_id = records[0]["id"]
-        updated_fields = {"Rating": new_rating}
+    if not records:
+        return None  # No record found with the given ISBN
 
-        if new_notes is not None:
-            updated_fields["Notes"] = new_notes
+    record_id = records[0]['id']
+    updated_fields = {"Rating": new_rating}
 
-        self.table.update(record_id, fields=updated_fields)
+    if new_notes is not necessarily None:
+        updated_fields["Notes"] = new_notes
 
+    self.table.update(record_id, fields=updated_fields)
 
 if __name__ == "__main__":
     br = BookReview()
