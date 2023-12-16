@@ -41,6 +41,8 @@ class AllReviews(Resource):
                           properties:
                             Books:
                               type: string
+                            ISBN:
+                              type: string
                             Rating:
                               type: number
                             Notes:
@@ -77,6 +79,7 @@ class PostReview(Resource):
                 required:
                 - Book
                 - Rating
+                - ISBN
                 properties:
                     Book:
                         type: string
@@ -84,6 +87,9 @@ class PostReview(Resource):
                     Rating:
                         type: number
                         description: The review text
+                    ISBN:
+                        type: string
+                        description: Book Serial Number
                     Notes:
                         type: string
                         description: Additional notes (optional)
@@ -96,7 +102,6 @@ class PostReview(Resource):
         rating = data.get("Rating")
         notes = data.get("Notes", None)
 
-
         # Here you would add logic to insert the review data into your database
         br.add_book_rating(book, rating, notes)
 
@@ -104,8 +109,6 @@ class PostReview(Resource):
 
 
 api.add_resource(PostReview, "/post_review")
-
-
 api.add_resource(AllReviews, "/all_reviews")
 
 

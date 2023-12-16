@@ -27,8 +27,8 @@ class BookReview:
         table = self.table.all(sort=rating)[:max_records]
         return table
 
-    def add_book_rating(self, book_title, rating, notes=None):
-        fields = {"Books": book_title, "Rating": rating, "Notes": notes}
+    def add_book_rating(self, book_title, rating, isbn, notes=None):
+        fields = {"ISBN": isbn, "Books": book_title, "Rating": rating, "Notes": notes}
         self.table.create(fields=fields)
 
 
