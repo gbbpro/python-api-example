@@ -32,20 +32,21 @@ class BookReview:
         self.table.create(fields=fields)
 
 
-def update_book_rating(self, isbn, new_rating, new_notes=None):
-    # Fetch records filtered by ISBN
-    records = self.table.all(formula=f"{{ISBN}} = '{isbn}'")
+    def update_book_rating(self, isbn, new_rating, new_notes=None):
+        # Fetch records filtered by ISBN
+        records = self.table.all(formula=f"{{ISBN}} = '{isbn}'")
 
-    if not records:
-        return None  # No record found with the given ISBN
+        if not records:
+            return None  # No record found with the given ISBN
 
-    record_id = records[0]["id"]
-    updated_fields = {"Rating": new_rating}
+        record_id = records[0]["id"]
+        updated_fields = {"Rating": new_rating}
 
-    if new_notes is not None:
-        updated_fields["Notes"] = new_notes
+        if new_notes is not None:
+            updated_fields["Notes"] = new_notes
 
-    self.table.update(record_id, fields=updated_fields)
+        # Update the record using PATCH method
+        self.table.update(record_id, fields=updated_fields, typecast=True)
 
 
 if __name__ == "__main__":
