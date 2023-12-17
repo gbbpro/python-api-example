@@ -28,9 +28,8 @@ class BookReview:
         return table
 
     def add_book_rating(self, book_title, rating, isbn, notes=None):
-        fields = {"ISBN": isbn, "Books": book_title, "Rating": rating, "Notes": notes}
+        fields = {"Books": book_title, "Rating": rating, "Notes": notes, "ISBN": isbn}
         self.table.create(fields=fields)
-
 
     def update_book_rating(self, isbn, new_rating, new_notes=None):
         # Fetch records filtered by ISBN

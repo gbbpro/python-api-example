@@ -102,9 +102,8 @@ class PostReview(Resource):
         isbn = data.get("ISBN")
         rating = data.get("Rating")
         notes = data.get("Notes", None)
-
+        br.add_book_rating(book_title=book, rating=rating, isbn=isbn, notes=notes)
         # Here you would add logic to insert the review data into your database
-        br.add_book_rating(book, isbn, rating, notes)
 
         return {"message": "Review added successfully"}, 201
 
